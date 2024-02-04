@@ -1,0 +1,542 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="ShoppingdatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tAdministrator">
+          <Key>
+            <PropertyRef Name="AId" />
+          </Key>
+          <Property Name="AId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AUserId" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="APassword" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tMember">
+          <Key>
+            <PropertyRef Name="MId" />
+          </Key>
+          <Property Name="MId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MUserId" Type="nvarchar" MaxLength="50" />
+          <Property Name="MPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="MEmail" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="MPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="MResetPassword" Type="nvarchar" MaxLength="50" />
+          <Property Name="MActivate" Type="bit" Nullable="false" />
+          <Property Name="MOauthTypeId" Type="nvarchar" MaxLength="50" />
+          <Property Name="MOauthId" Type="nvarchar" MaxLength="50" />
+          <Property Name="MCartOrderId" Type="int" />
+        </EntityType>
+        <EntityType Name="tMessage_Board">
+          <Key>
+            <PropertyRef Name="MBId" />
+          </Key>
+          <Property Name="MBId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MBMId" Type="int" Nullable="false" />
+          <Property Name="MBPId" Type="int" Nullable="false" />
+          <Property Name="MBMessage" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="MBDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tOrder">
+          <Key>
+            <PropertyRef Name="OId" />
+          </Key>
+          <Property Name="OId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OMemberId" Type="int" Nullable="false" />
+          <Property Name="OReceiver" Type="nvarchar" MaxLength="50" />
+          <Property Name="OEmail" Type="nvarchar" MaxLength="50" />
+          <Property Name="OAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="OPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="OPrice" Type="int" />
+          <Property Name="OShipPrice" Type="int" />
+          <Property Name="ODate" Type="datetime" />
+          <Property Name="OAprroved" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tOrderDetail">
+          <Key>
+            <PropertyRef Name="ODId" />
+          </Key>
+          <Property Name="ODId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ODPId" Type="int" Nullable="false" />
+          <Property Name="ODOId" Type="int" Nullable="false" />
+          <Property Name="ODQty" Type="int" Nullable="false" />
+          <Property Name="ODProcuctPrcie" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tProduct">
+          <Key>
+            <PropertyRef Name="PId" />
+          </Key>
+          <Property Name="PId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PPrice" Type="int" Nullable="false" />
+          <Property Name="PImg" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PTypeId" Type="int" Nullable="false" />
+          <Property Name="POwner" Type="nvarchar" MaxLength="50" />
+          <Property Name="PInventory" Type="int" Nullable="false" />
+          <Property Name="PAvailable" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tProductType">
+          <Key>
+            <PropertyRef Name="PTId" />
+          </Key>
+          <Property Name="PTId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PTName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_tMember_ToTable">
+          <End Role="tOrder" Type="Self.tOrder" Multiplicity="0..1" />
+          <End Role="tMember" Type="Self.tMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tOrder">
+              <PropertyRef Name="OId" />
+            </Principal>
+            <Dependent Role="tMember">
+              <PropertyRef Name="MCartOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tMessage_Board_ToTable">
+          <End Role="tMember" Type="Self.tMember" Multiplicity="1" />
+          <End Role="tMessage_Board" Type="Self.tMessage_Board" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tMember">
+              <PropertyRef Name="MId" />
+            </Principal>
+            <Dependent Role="tMessage_Board">
+              <PropertyRef Name="MBMId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tMessage_Board_ToTable_1">
+          <End Role="tProduct" Type="Self.tProduct" Multiplicity="1" />
+          <End Role="tMessage_Board" Type="Self.tMessage_Board" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tProduct">
+              <PropertyRef Name="PId" />
+            </Principal>
+            <Dependent Role="tMessage_Board">
+              <PropertyRef Name="MBPId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tOrder_ToTable">
+          <End Role="tMember" Type="Self.tMember" Multiplicity="1" />
+          <End Role="tOrder" Type="Self.tOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tMember">
+              <PropertyRef Name="MId" />
+            </Principal>
+            <Dependent Role="tOrder">
+              <PropertyRef Name="OMemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tOrderDetail_ToTable">
+          <End Role="tProduct" Type="Self.tProduct" Multiplicity="1" />
+          <End Role="tOrderDetail" Type="Self.tOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tProduct">
+              <PropertyRef Name="PId" />
+            </Principal>
+            <Dependent Role="tOrderDetail">
+              <PropertyRef Name="ODPId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tOrderDetail_ToTable_1">
+          <End Role="tOrder" Type="Self.tOrder" Multiplicity="1" />
+          <End Role="tOrderDetail" Type="Self.tOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tOrder">
+              <PropertyRef Name="OId" />
+            </Principal>
+            <Dependent Role="tOrderDetail">
+              <PropertyRef Name="ODOId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tProduct_ToTable">
+          <End Role="tProductType" Type="Self.tProductType" Multiplicity="1" />
+          <End Role="tProduct" Type="Self.tProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tProductType">
+              <PropertyRef Name="PTId" />
+            </Principal>
+            <Dependent Role="tProduct">
+              <PropertyRef Name="PTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ShoppingdatabaseModelStoreContainer">
+          <EntitySet Name="tAdministrator" EntityType="Self.tAdministrator" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tMember" EntityType="Self.tMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tMessage_Board" EntityType="Self.tMessage_Board" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tOrder" EntityType="Self.tOrder" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tOrderDetail" EntityType="Self.tOrderDetail" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tProduct" EntityType="Self.tProduct" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tProductType" EntityType="Self.tProductType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tMember_ToTable" Association="Self.FK_tMember_ToTable">
+            <End Role="tOrder" EntitySet="tOrder" />
+            <End Role="tMember" EntitySet="tMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tMessage_Board_ToTable" Association="Self.FK_tMessage_Board_ToTable">
+            <End Role="tMember" EntitySet="tMember" />
+            <End Role="tMessage_Board" EntitySet="tMessage_Board" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tMessage_Board_ToTable_1" Association="Self.FK_tMessage_Board_ToTable_1">
+            <End Role="tProduct" EntitySet="tProduct" />
+            <End Role="tMessage_Board" EntitySet="tMessage_Board" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tOrder_ToTable" Association="Self.FK_tOrder_ToTable">
+            <End Role="tMember" EntitySet="tMember" />
+            <End Role="tOrder" EntitySet="tOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tOrderDetail_ToTable" Association="Self.FK_tOrderDetail_ToTable">
+            <End Role="tProduct" EntitySet="tProduct" />
+            <End Role="tOrderDetail" EntitySet="tOrderDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tOrderDetail_ToTable_1" Association="Self.FK_tOrderDetail_ToTable_1">
+            <End Role="tOrder" EntitySet="tOrder" />
+            <End Role="tOrderDetail" EntitySet="tOrderDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tProduct_ToTable" Association="Self.FK_tProduct_ToTable">
+            <End Role="tProductType" EntitySet="tProductType" />
+            <End Role="tProduct" EntitySet="tProduct" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ShoppingdatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tAdministrator">
+          <Key>
+            <PropertyRef Name="AId" />
+          </Key>
+          <Property Name="AId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AUserId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="APassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tMember">
+          <Key>
+            <PropertyRef Name="MId" />
+          </Key>
+          <Property Name="MId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MUserId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MResetPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MActivate" Type="Boolean" Nullable="false" />
+          <Property Name="MOauthTypeId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MOauthId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MCartOrderId" Type="Int32" />
+          <NavigationProperty Name="tOrder" Relationship="Self.FK_tMember_ToTable" FromRole="tMember" ToRole="tOrder" />
+          <NavigationProperty Name="tMessage_Board" Relationship="Self.FK_tMessage_Board_ToTable" FromRole="tMember" ToRole="tMessage_Board" />
+          <NavigationProperty Name="tOrder1" Relationship="Self.FK_tOrder_ToTable" FromRole="tMember" ToRole="tOrder" />
+        </EntityType>
+        <EntityType Name="tMessage_Board">
+          <Key>
+            <PropertyRef Name="MBId" />
+          </Key>
+          <Property Name="MBId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MBMId" Type="Int32" Nullable="false" />
+          <Property Name="MBPId" Type="Int32" Nullable="false" />
+          <Property Name="MBMessage" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="MBDate" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="tMember" Relationship="Self.FK_tMessage_Board_ToTable" FromRole="tMessage_Board" ToRole="tMember" />
+          <NavigationProperty Name="tProduct" Relationship="Self.FK_tMessage_Board_ToTable_1" FromRole="tMessage_Board" ToRole="tProduct" />
+        </EntityType>
+        <EntityType Name="tOrder">
+          <Key>
+            <PropertyRef Name="OId" />
+          </Key>
+          <Property Name="OId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OMemberId" Type="Int32" Nullable="false" />
+          <Property Name="OReceiver" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OEmail" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OPrice" Type="Int32" />
+          <Property Name="OShipPrice" Type="Int32" />
+          <Property Name="ODate" Type="DateTime" Precision="3" />
+          <Property Name="OAprroved" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tMember" Relationship="Self.FK_tMember_ToTable" FromRole="tOrder" ToRole="tMember" />
+          <NavigationProperty Name="tMember1" Relationship="Self.FK_tOrder_ToTable" FromRole="tOrder" ToRole="tMember" />
+          <NavigationProperty Name="tOrderDetail" Relationship="Self.FK_tOrderDetail_ToTable_1" FromRole="tOrder" ToRole="tOrderDetail" />
+        </EntityType>
+        <EntityType Name="tOrderDetail">
+          <Key>
+            <PropertyRef Name="ODId" />
+          </Key>
+          <Property Name="ODId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ODPId" Type="Int32" Nullable="false" />
+          <Property Name="ODOId" Type="Int32" Nullable="false" />
+          <Property Name="ODQty" Type="Int32" Nullable="false" />
+          <Property Name="ODProcuctPrcie" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tOrder" Relationship="Self.FK_tOrderDetail_ToTable_1" FromRole="tOrderDetail" ToRole="tOrder" />
+          <NavigationProperty Name="tProduct" Relationship="Self.FK_tOrderDetail_ToTable" FromRole="tOrderDetail" ToRole="tProduct" />
+        </EntityType>
+        <EntityType Name="tProduct">
+          <Key>
+            <PropertyRef Name="PId" />
+          </Key>
+          <Property Name="PId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PPrice" Type="Int32" Nullable="false" />
+          <Property Name="PImg" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PTypeId" Type="Int32" Nullable="false" />
+          <Property Name="POwner" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PInventory" Type="Int32" Nullable="false" />
+          <Property Name="PAvailable" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tMessage_Board" Relationship="Self.FK_tMessage_Board_ToTable_1" FromRole="tProduct" ToRole="tMessage_Board" />
+          <NavigationProperty Name="tOrderDetail" Relationship="Self.FK_tOrderDetail_ToTable" FromRole="tProduct" ToRole="tOrderDetail" />
+          <NavigationProperty Name="tProductType" Relationship="Self.FK_tProduct_ToTable" FromRole="tProduct" ToRole="tProductType" />
+        </EntityType>
+        <EntityType Name="tProductType">
+          <Key>
+            <PropertyRef Name="PTId" />
+          </Key>
+          <Property Name="PTId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PTName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="tProduct" Relationship="Self.FK_tProduct_ToTable" FromRole="tProductType" ToRole="tProduct" />
+        </EntityType>
+        <Association Name="FK_tMember_ToTable">
+          <End Role="tOrder" Type="Self.tOrder" Multiplicity="0..1" />
+          <End Role="tMember" Type="Self.tMember" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tOrder">
+              <PropertyRef Name="OId" />
+            </Principal>
+            <Dependent Role="tMember">
+              <PropertyRef Name="MCartOrderId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tMessage_Board_ToTable">
+          <End Role="tMember" Type="Self.tMember" Multiplicity="1" />
+          <End Role="tMessage_Board" Type="Self.tMessage_Board" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tMember">
+              <PropertyRef Name="MId" />
+            </Principal>
+            <Dependent Role="tMessage_Board">
+              <PropertyRef Name="MBMId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tOrder_ToTable">
+          <End Role="tMember" Type="Self.tMember" Multiplicity="1" />
+          <End Role="tOrder" Type="Self.tOrder" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tMember">
+              <PropertyRef Name="MId" />
+            </Principal>
+            <Dependent Role="tOrder">
+              <PropertyRef Name="OMemberId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tMessage_Board_ToTable_1">
+          <End Role="tProduct" Type="Self.tProduct" Multiplicity="1" />
+          <End Role="tMessage_Board" Type="Self.tMessage_Board" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tProduct">
+              <PropertyRef Name="PId" />
+            </Principal>
+            <Dependent Role="tMessage_Board">
+              <PropertyRef Name="MBPId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tOrderDetail_ToTable_1">
+          <End Role="tOrder" Type="Self.tOrder" Multiplicity="1" />
+          <End Role="tOrderDetail" Type="Self.tOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tOrder">
+              <PropertyRef Name="OId" />
+            </Principal>
+            <Dependent Role="tOrderDetail">
+              <PropertyRef Name="ODOId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tOrderDetail_ToTable">
+          <End Role="tProduct" Type="Self.tProduct" Multiplicity="1" />
+          <End Role="tOrderDetail" Type="Self.tOrderDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tProduct">
+              <PropertyRef Name="PId" />
+            </Principal>
+            <Dependent Role="tOrderDetail">
+              <PropertyRef Name="ODPId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tProduct_ToTable">
+          <End Role="tProductType" Type="Self.tProductType" Multiplicity="1" />
+          <End Role="tProduct" Type="Self.tProduct" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tProductType">
+              <PropertyRef Name="PTId" />
+            </Principal>
+            <Dependent Role="tProduct">
+              <PropertyRef Name="PTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ShoppingdatabaseEntities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tAdministrator" EntityType="Self.tAdministrator" />
+          <EntitySet Name="tMember" EntityType="Self.tMember" />
+          <EntitySet Name="tMessage_Board" EntityType="Self.tMessage_Board" />
+          <EntitySet Name="tOrder" EntityType="Self.tOrder" />
+          <EntitySet Name="tOrderDetail" EntityType="Self.tOrderDetail" />
+          <EntitySet Name="tProduct" EntityType="Self.tProduct" />
+          <EntitySet Name="tProductType" EntityType="Self.tProductType" />
+          <AssociationSet Name="FK_tMember_ToTable" Association="Self.FK_tMember_ToTable">
+            <End Role="tOrder" EntitySet="tOrder" />
+            <End Role="tMember" EntitySet="tMember" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tMessage_Board_ToTable" Association="Self.FK_tMessage_Board_ToTable">
+            <End Role="tMember" EntitySet="tMember" />
+            <End Role="tMessage_Board" EntitySet="tMessage_Board" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tOrder_ToTable" Association="Self.FK_tOrder_ToTable">
+            <End Role="tMember" EntitySet="tMember" />
+            <End Role="tOrder" EntitySet="tOrder" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tMessage_Board_ToTable_1" Association="Self.FK_tMessage_Board_ToTable_1">
+            <End Role="tProduct" EntitySet="tProduct" />
+            <End Role="tMessage_Board" EntitySet="tMessage_Board" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tOrderDetail_ToTable_1" Association="Self.FK_tOrderDetail_ToTable_1">
+            <End Role="tOrder" EntitySet="tOrder" />
+            <End Role="tOrderDetail" EntitySet="tOrderDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tOrderDetail_ToTable" Association="Self.FK_tOrderDetail_ToTable">
+            <End Role="tProduct" EntitySet="tProduct" />
+            <End Role="tOrderDetail" EntitySet="tOrderDetail" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tProduct_ToTable" Association="Self.FK_tProduct_ToTable">
+            <End Role="tProductType" EntitySet="tProductType" />
+            <End Role="tProduct" EntitySet="tProduct" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ShoppingdatabaseModelStoreContainer" CdmEntityContainer="ShoppingdatabaseEntities1">
+          <EntitySetMapping Name="tAdministrator">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tAdministrator">
+              <MappingFragment StoreEntitySet="tAdministrator">
+                <ScalarProperty Name="AId" ColumnName="AId" />
+                <ScalarProperty Name="AUserId" ColumnName="AUserId" />
+                <ScalarProperty Name="APassword" ColumnName="APassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tMember">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tMember">
+              <MappingFragment StoreEntitySet="tMember">
+                <ScalarProperty Name="MId" ColumnName="MId" />
+                <ScalarProperty Name="MUserId" ColumnName="MUserId" />
+                <ScalarProperty Name="MPassword" ColumnName="MPassword" />
+                <ScalarProperty Name="MEmail" ColumnName="MEmail" />
+                <ScalarProperty Name="MName" ColumnName="MName" />
+                <ScalarProperty Name="MPhone" ColumnName="MPhone" />
+                <ScalarProperty Name="MResetPassword" ColumnName="MResetPassword" />
+                <ScalarProperty Name="MActivate" ColumnName="MActivate" />
+                <ScalarProperty Name="MOauthTypeId" ColumnName="MOauthTypeId" />
+                <ScalarProperty Name="MOauthId" ColumnName="MOauthId" />
+                <ScalarProperty Name="MCartOrderId" ColumnName="MCartOrderId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tMessage_Board">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tMessage_Board">
+              <MappingFragment StoreEntitySet="tMessage_Board">
+                <ScalarProperty Name="MBId" ColumnName="MBId" />
+                <ScalarProperty Name="MBMId" ColumnName="MBMId" />
+                <ScalarProperty Name="MBPId" ColumnName="MBPId" />
+                <ScalarProperty Name="MBMessage" ColumnName="MBMessage" />
+                <ScalarProperty Name="MBDate" ColumnName="MBDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tOrder">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tOrder">
+              <MappingFragment StoreEntitySet="tOrder">
+                <ScalarProperty Name="OId" ColumnName="OId" />
+                <ScalarProperty Name="OMemberId" ColumnName="OMemberId" />
+                <ScalarProperty Name="OReceiver" ColumnName="OReceiver" />
+                <ScalarProperty Name="OEmail" ColumnName="OEmail" />
+                <ScalarProperty Name="OAddress" ColumnName="OAddress" />
+                <ScalarProperty Name="OPhone" ColumnName="OPhone" />
+                <ScalarProperty Name="OPrice" ColumnName="OPrice" />
+                <ScalarProperty Name="OShipPrice" ColumnName="OShipPrice" />
+                <ScalarProperty Name="ODate" ColumnName="ODate" />
+                <ScalarProperty Name="OAprroved" ColumnName="OAprroved" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tOrderDetail">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tOrderDetail">
+              <MappingFragment StoreEntitySet="tOrderDetail">
+                <ScalarProperty Name="ODId" ColumnName="ODId" />
+                <ScalarProperty Name="ODPId" ColumnName="ODPId" />
+                <ScalarProperty Name="ODOId" ColumnName="ODOId" />
+                <ScalarProperty Name="ODQty" ColumnName="ODQty" />
+                <ScalarProperty Name="ODProcuctPrcie" ColumnName="ODProcuctPrcie" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tProduct">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tProduct">
+              <MappingFragment StoreEntitySet="tProduct">
+                <ScalarProperty Name="PId" ColumnName="PId" />
+                <ScalarProperty Name="PName" ColumnName="PName" />
+                <ScalarProperty Name="PPrice" ColumnName="PPrice" />
+                <ScalarProperty Name="PImg" ColumnName="PImg" />
+                <ScalarProperty Name="PTypeId" ColumnName="PTypeId" />
+                <ScalarProperty Name="POwner" ColumnName="POwner" />
+                <ScalarProperty Name="PInventory" ColumnName="PInventory" />
+                <ScalarProperty Name="PAvailable" ColumnName="PAvailable" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tProductType">
+            <EntityTypeMapping TypeName="ShoppingdatabaseModel.tProductType">
+              <MappingFragment StoreEntitySet="tProductType">
+                <ScalarProperty Name="PTId" ColumnName="PTId" />
+                <ScalarProperty Name="PTName" ColumnName="PTName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

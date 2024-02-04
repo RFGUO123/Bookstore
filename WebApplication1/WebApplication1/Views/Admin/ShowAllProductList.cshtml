@@ -1,0 +1,152 @@
+﻿@model IEnumerable<WebApplication1.Models.tProduct>
+
+@using WebApplication1.Repository
+
+@section styles{
+    <link href="@Url.Content("~/Styles/ShowAllProductList_index.css")" rel="stylesheet" type="text/css" />
+}
+
+@{
+    ViewBag.Title = "商品總覽";
+}
+
+
+@if (Model.Count() != 0)
+{
+    string title = "商場共有" + ViewBag.total_count + "項商品";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+        </div>
+    </div>
+    <br />
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead style="background-color: #ECFFFF ">
+                <tr style="text-align:center">
+                    <th style="width :20%">
+                        樣式
+                    </th>
+                    <th>
+                        名稱
+                    </th>
+                    <th>
+                        剩餘數量
+                    </th>
+                    <th>
+                        單價
+                    </th>
+                    <th>
+                        類別
+                    </th>
+                    <th>
+                        商品管理
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    Product_Repository pr = new Product_Repository();
+                    string Typename = pr.Select_ProductType_By_TypeId(item.PTypeId);
+                    <tr>
+                        <td style=" width :20%">
+                            <img src="~/images/@item.PImg" style="width: 100%; height:100%">
+                        </td>
+                        <td style="text-align: center">
+                            @item.PName
+                        </td>
+                        @if (item.PInventory <= 0)
+                        {
+                            <td style="text-align: center ; color : red">
+                                @item.PInventory
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="text-align: center">
+                                @item.PInventory
+                            </td>
+                        }
+                        <td style="text-align: center">
+                            $@item.PPrice
+                        </td>
+                        <td style="text-align: center">
+                            @Typename
+                        </td>
+                        <td style="text-align: center">
+                            @Html.ActionLink("強制修改", "ModifyProduct_By_Admin", new { PId = item.PId }, new { @class = "btn btn-primary" })
+                            <br />
+                            <br />
+                            @if (item.PAvailable == true)
+                            {
+                                <form action="/Admin/DeleteProduct_By_Admin" method="post">
+                                    <input type="submit" value="強制下架" class="btn btn-danger" onclick="return confirm('確定強制下架?')" />
+                                    <input type="hidden" name="PId" value="@item.PId">
+                                </form>
+                            }
+                            else
+                            {
+                                <form action="/Admin/RecoverProduct_By_Admin" method="post">
+                                    <input type="submit" value="重新上架" class="btn btn-info" onclick="return confirm('確定重新上架?')" />
+                                    <input type="hidden" name="PId" value="@item.PId">
+                                </form>
+                            }
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-center">
+        @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
+        {
+            <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("ShowAllProductList","Admin")?page=@k">@k</a>
+        }
+    </div>
+}
+else
+{
+    <h1>目前沒有任何商品</h1>
+}
+
+@if (@TempData["Delete_Success"] != null)
+{
+    <script>alert('強制下架成功')</script>
+}
+else if (@TempData["Recover_Success"] != null)
+{
+    <script>alert('重新上架成功')</script>
+}
+else if (@TempData["Modify_Success"] != null)
+{
+    <script>alert('強制修改成功')</script>
+}
+else if (@TempData["Delete_Error"] != null)
+{
+    <script>alert('強制下架失敗，請確認您是否有登入系統管理員或稍後再試')</script>
+}
+else if (@TempData["Recover_Error"] != null)
+{
+    <script>alert('重新上架失敗，請確認您是否有登入系統管理員或稍後再試')</script>
+}
+else if (@TempData["SaveImg_Error"] != null)
+{
+    <script>alert('圖片加載失敗，請確認檔名是否包含特殊符號或稍後再試')</script>
+}
+else if (@TempData["Modify_Error"] != null)
+{
+    <script>alert('強制修改失敗，請確認您是否有登入系統管理員或稍後再試')</script>
+}
+
+
+
+
+
+
+
+
+

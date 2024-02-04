@@ -1,0 +1,152 @@
+﻿@model IEnumerable<WebApplication1.Models.tProduct>
+@using WebApplication1.Repository
+
+@section styles{
+    <link href="@Url.Content("~/Styles/ShowProductList_index.css")" rel="stylesheet" type="text/css" />
+}
+
+@{
+    ViewBag.Title = "商品一覽";
+}
+
+@if (Model.Count() != 0)
+{
+    string title = "您有" + ViewBag.total_count + "項正在販售的商品";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Product/CreateProduct" style="text-decoration: none"><i class="fa-solid fa-square-plus"></i>&ensp;新增商品</a></span>
+        </div>
+    </div>
+    <br />
+
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead style="background-color: #ECFFFF ">
+                <tr style="text-align:center">
+                    <th style="width :20%">
+                        樣式
+                    </th>
+                    <th>
+                        名稱
+                    </th>
+                    <th>
+                        剩餘數量
+                    </th>
+                    <th>
+                        單價
+                    </th>
+                    <th>
+                        類別
+                    </th>
+                    <th>
+                        商品管理
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    Product_Repository pr = new Product_Repository();
+                    string Typename = pr.Select_ProductType_By_TypeId(item.PTypeId);
+                    <tr>
+                        <td style=" width :20%">
+                            <img src="~/images/@item.PImg" style="width: 100%; height:100%">
+                        </td>
+                        <td style="text-align: center">
+                            @item.PName
+                        </td>
+                        @if (item.PInventory <= 0)
+                        {
+                            <td style="text-align: center ; color : red">
+                                @item.PInventory
+                            </td>
+                        }
+                        else
+                        {
+                            <td style="text-align: center">
+                                @item.PInventory
+                            </td>
+                        }
+                        <td style="text-align: center">
+                            $@item.PPrice
+                        </td>
+                        <td style="text-align: center">
+                            @Typename
+                        </td>
+                        <td style="text-align: center">
+                            @Html.ActionLink("修改資訊", "ModifyProduct", new { PId = item.PId }, new { @class = "btn btn-primary" })
+                            <br />
+                            <br />
+                            <form action="/Product/DeleteProduct" method="post">
+                                <input type="submit" value="刪除商品" class="btn btn-danger" onclick="return confirm('確定刪除商品嗎?')" />
+                                <input type="hidden" name="PId" value="@item.PId">
+                            </form>
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-center">
+        @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
+        {
+            <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("ShowProductList","Product")?page=@k">@k</a>
+        }
+    </div>
+}
+else
+{
+    string title = "您尚未建立任何商品";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Product/CreateProduct" style="text-decoration: none"><i class="fa-solid fa-square-plus"></i>&ensp;新增商品</a></span>
+        </div>
+    </div>
+}
+
+@if (@TempData["Delete_Success"] != null)
+{
+    <script>alert('刪除成功')</script>
+}
+else if (@TempData["Modify_Success"] != null)
+{
+    <script>alert('修改成功')</script>
+}
+else if (@TempData["Create_Success"] != null)
+{
+    <script>alert('新增成功')</script>
+}
+else if (@TempData["Delete_Error"] != null)
+{
+    <script>alert('刪除失敗，請確認您是否有刪除商品權限或稍後再試')</script>
+}
+else if (@TempData["Modify_Error"] != null)
+{
+    <script>alert('修改失敗，請確認您是否有修改商品權限或稍後再試')</script>
+}
+else if (@TempData["Create_Error"] != null)
+{
+    <script>alert('新增失敗，請確認您是否有新增商品權限或稍後再試')</script>
+}
+else if (@TempData["No_Modify_Permission"] != null)
+{
+    <script>alert('您沒有修改此商品的權限')</script>
+}
+else if (@TempData["No_Create_Permission"] != null)
+{
+    <script>alert('您沒有新增商品的權限')</script>
+}
+else if (@TempData["Test_Success"] != null)
+{
+    <script>alert('測試成功')</script>
+}
+else if (@TempData["SaveImg_Error"] != null)
+{
+    <script>alert('圖片加載失敗，請確認檔名是否包含特殊符號或稍後再試')</script>
+}
+
+

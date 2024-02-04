@@ -1,0 +1,148 @@
+﻿@model WebApplication1.Models.tProduct
+
+@using WebApplication1.Repository;
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#sent_message_btn").click(function () { 
+                var message = $("#message").val().trim();
+                if (message.length == 0) {
+                    alert('留言字數不可為0');
+                    return;
+                }
+                else if (message.indexOf("幹!") >= 0) {
+                    alert('不可包含不雅文字');
+                    return;
+                }
+                else {
+                    var PId = $("#submit_btn").val().trim();
+                    $.ajax({
+                        url : "/Message/Create",
+                        dataType: "Json",
+                        data: {
+                            message: message,
+                            PId: PId
+                        },
+                        type: "post",
+                        success: function (data) {
+                            data = JSON.parse(data);
+                            //location.reload() >>> 原網址載入
+                            //指定路徑載入
+                            location.href = "/Product/Index?pId=" + PId + "&page=1";
+                        },
+                        error: function (xhr) {
+                            alert("發生預期外的錯誤誤，請稍後再試");
+                            //alert("err : \n" + JSON.stringify(xhr));
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+}
+
+
+@{
+    if (Model != null)
+    {
+        ViewBag.Title = Model.PName + " - 優質好貨，要買要快";
+    }
+    else
+    {
+        ViewBag.Title = "此產品不存在";
+    }
+}
+
+@if (Model != null)
+{
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <img src="~/images/@Model.PImg" style="width: 100%; height: 100%; border: 0.5px solid #9D9D9D; ">
+                </div>
+                <div class="col-md-8 dl-horizontal" style="background-color: #ECFFFF ;border-radius: 5px ">
+                    <h3>
+                        @Html.DisplayFor(model => model.PName)
+                    </h3>
+                    <h3>
+                        直購價: @Html.DisplayFor(model => model.PPrice)
+                    </h3>
+                    <h3>
+                        @{
+                            int Inventory = Model.PInventory;
+                            string answer;
+                            if (Inventory >= 10)
+                            {
+                                answer = "庫存大於10本";
+                            }
+                            else
+                            {
+                                answer = "庫存尚於" + Inventory + "本";
+                            }
+                        }
+                        庫存數量: @answer
+                    </h3>
+                    <form action="/Cart/AddCar" method="post">
+                        <input type="submit" value="加入購物車" style="font-size: 1.2em; background-color: orangered; border: none " class="btn btn-primary" onclick="return confirm('確定購買 @Model.PName 嗎?')" />
+                        <input type="hidden" id="submit_btn" name="PId" value="@Model.PId">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    if (ViewBag.messages.Count != 0)
+    {
+        int i = 1;
+        <div style="background-color: lightgoldenrodyellow; border-radius: 5px">
+            <p class="fs-3">留言板</p>
+
+            @foreach (var item in ViewBag.messages)
+            {
+                Member_Repository mr = new Member_Repository();
+                var member = mr.Select_Member_By_MId(item.MBMId);
+                <div class="row">
+                    <div class="col-md-1 text-center">
+                        留言 @i
+                    </div>
+                    <div class="col-md-10" style="background-color:lightyellow;margin-bottom:10px">
+                        <p>
+                            @member.MName  <span style="font-size:50%">(@item.MBDate)</span>
+                        </p>
+                        <p>
+                            @item.MBMessage
+                        </p>
+                    </div>
+                </div>
+                i++;
+            }
+            <div class="row justify-content-center">
+                @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
+                {
+                    <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("Index","Product")?PId=@Model.PId&page=@k">@k</a>
+                }
+            </div>
+        </div>
+    }
+
+    <hr />
+    <div style="background-color: lightgray; border-radius: 5px">
+        <p class="fs-3">提出問題</p>
+        <p style="text-indent: 2em">為保障會員交易安全，留言請勿填寫個人資料、外部連結或任何導私下交易之內容，否則您送出的內容可能無法正常顯示。</p>
+        <div style="height: 300px;" class="row">
+            <div class="offset-md-3 col-md-6">
+                <textarea id="message" placeholder="請輸入您的建議或留言" style="min-width: 100%; height: 100%;border-radius: 5px"></textarea>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <input type="button" id="sent_message_btn" class="btn btn-primary col-md-1" style="font-size: 1.2em; margin-top: 10px; margin-bottom: 10px; background-color: orangered; border: none " value="送出留言">
+        </div>
+    </div>
+
+}
+else
+{
+    <h1>此產品不存在</h1>
+}

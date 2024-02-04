@@ -1,0 +1,113 @@
+﻿@using WebApplication1.Repository;
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="~/Styles/main_index.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/a90db61cf5.js" crossorigin="anonymous"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("styles", required: false)
+</head>
+<body>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+    <script src="~/JavaScript/swal.js"></script>
+
+    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
+        <div class="container">
+            @Html.ActionLink("基拉網路書店", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="切換導覽" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
+                <ul class="navbar-nav">
+                    <li>@Html.ActionLink("書目列表", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("購物車", "ShoppingCar", "Cart", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("我的訂單", "ShowOrderList", "Order", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("我的商品", "ShowProductList", "Product", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+
+                    @if (Session["AdminId"] != null)
+                    {
+                        <li>@Html.ActionLink("商品總覽", "ShowAllProductList", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        {
+                            Member_Repository ms = new Member_Repository();
+                            int MId = WebApplication1.Util.Change.Change_type.Change_from_String_to_Int(User.Identity.Name);
+                            string UserId = ms.Select_Member_By_MId(MId).MUserId;
+                            if (UserId != null)
+                            {
+                                <li>@Html.ActionLink("修改資料", "Modify_Information", "Member", new { area = "" }, new { @class = "nav-link" })</li>
+                            }
+                        }
+                        <li>@Html.ActionLink("登出", "Logout", "Member", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>
+                            <a href="~/Home/Index" class="nav-link">
+                                @Session["Welcome"]
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("會員登入", "Login", "Member", new { area = "" }, new { @class = "nav-link" })</li>
+                        <li>@Html.ActionLink("免費註冊", "Register", "Member", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
+                </ul>
+                <ul class="navbar-nav justify-content-end" style="position:relative;margin-right:-50px">
+                    <li style="position:relative;margin-right:20px">
+                        <form action="/Product/Search" method="get" id="search_form">
+                            <div class="input-group">
+                                <input type="search" class="form-control" placeholder="搜尋全站書籍" name="keyword" id="keyword_input">
+                                <button class="btn btn-primary" id="search_btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                        </form>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <button class="btn btn-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            類別搜詢
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="/Product/Search_Type?type=程式">程式</a></li>
+                            <li><a class="dropdown-item" href="/Product/Search_Type?type=旅遊">旅遊</a></li>
+                            <li><a class="dropdown-item" href="/Product/Search_Type?type=商業">商業</a></li>
+                            <li><a class="dropdown-item" href="/Product/Search_Type?type=漫畫">漫畫</a></li>
+                            <li><a class="dropdown-item" href="/Product/Search_Type?type=輕小說">輕小說</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - 基拉網路書店</p>
+        </footer>
+    </div>
+
+    @RenderSection("scripts", required: false)
+
+</body>
+<script>
+    $("#search_btn").click(function () {
+        keyword = $("#keyword_input").val().trim();
+        //k_en = encodeURIComponent(keyword);
+        $("#search_form").submit()
+    })
+</script>
+</html>
+

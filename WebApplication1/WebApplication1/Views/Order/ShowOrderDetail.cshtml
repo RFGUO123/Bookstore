@@ -1,0 +1,93 @@
+﻿@model IEnumerable<WebApplication1.Models.tOrderDetail>
+@using WebApplication1.Repository;
+
+@section styles{
+    <link href="@Url.Content("~/Styles/ShowOrderDetail_index.css")" rel="stylesheet" type="text/css" />    
+}
+
+@{
+    ViewBag.Title = "您的訂單內容";
+}
+
+@if (Model != null)
+{
+    <div class="container">
+        @{
+            Order_Repository or = new Order_Repository();
+            var ShoppingDate = (DateTime)or.Select_ShoppingDate_By_OId(Model.ToList()[0].ODOId);
+            string ShowInformation = "已在" + ShoppingDate.ToString("d") + "完成訂單";
+        }
+        <h4>您的訂單內容</h4>
+        <div class="row">
+            <span class="col" style="color:darkorange;font-size: large;">@ShowInformation</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Order/ShowOrderList" style="text-decoration: none"><i class="fa-solid fa-arrow-left"></i>&ensp;回訂單一覽</a></span>
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table align-middle" style="background-color: white;border-radius: 5px ">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="align-middle">
+                            @{
+                                Product_Repository pr = new Product_Repository();
+                                var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
+                                var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
+                                var total_money = item.ODProcuctPrcie * item.ODQty;
+                            }
+                            <td style="width :20%">
+                                <img src="~/images/@ProductImg" style="width: 100%; height:100%">
+                            </td>
+                            <td>
+                                @ProductName
+                                <br />
+                                <p style="color: orangered; font-size: 80%">$@item.ODProcuctPrcie</p>
+                            </td>
+                            <td class="text-end">
+                                x @item.ODQty
+                            </td>
+                            <td class="text-end">
+                                $@total_money&ensp;&ensp;
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="col-md-4" style=" background-color: white; border-radius: 5px;height:120px">
+                <div class="col-form-label row">
+                    <span class="col">商品小記</span>
+                    <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@ViewBag.Total&ensp;&ensp;</span>
+                </div>
+                @{
+                    int Ship_Price;
+                    if (@ViewBag.total > 500)
+                    {
+                        Ship_Price = 0;
+                    }
+                    else
+                    {
+                        Ship_Price = 100;
+                    }
+
+                }
+                <div class="col-form-label row">
+                    <span class="col">運費</span>
+                    <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@Ship_Price&ensp;&ensp;</span>
+                </div>
+                @{
+                    int Total_Price;
+                    Total_Price = @ViewBag.total + Ship_Price;
+                }
+                <div class="col-form-label row">
+                    <span class="col">總額小記</span>
+                    <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@Total_Price&ensp;&ensp;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+<h1>此筆訂單不存在</h1>
+}
+

@@ -1,0 +1,66 @@
+﻿
+@model IEnumerable<WebApplication1.Models.tProduct>
+@{
+    ViewBag.Title = "產品列表";
+}
+@section styles {
+    <link href="@Url.Content("~/Styles/Home_index.css")" rel="stylesheet" type="text/css" />
+}
+
+@if (Model.Count() != 0)
+{
+    <div class="row align-items-start" style="margin-top:20px">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="thumbnail">
+                    <div class="img_box">
+                        <a href="@Url.Action("Index","Product")?PId=@item.PId"><img src="~/images/@item.PImg" class="product_img"></a>
+                    </div>
+                    <br />
+                    <div class="caption">
+                        <a href="@Url.Action("Index","Product")?PId=@item.PId" style="text-decoration: none;" class="text_product_name"><h4>@item.PName</h4></a>
+                        @{
+                            int count = 0;
+                            for (int i = 0; i < item.PName.Length; i++)
+                            {
+                                if (System.Text.RegularExpressions.Regex.IsMatch(item.PName.Substring(i, 1), "[\u4e00-\u9fa5]+"))
+                                {
+                                    count += 2;
+                                }
+                                else
+                                {
+                                    count += 1;
+                                }
+                            }
+                            if (count <= 32)
+                            {
+                                <br />
+                            }
+                        }
+
+                        <p>單價:@item.PPrice</p>
+                        <form action="/Cart/AddCar" method="post" class="align-items-end">
+                            <input type="submit" value="加入購物車" class="btn btn-primary" onclick="return confirm('確定購買 @item.PName 嗎?')" />
+                            <input type="hidden" name="PId" value="@item.PId">
+                        </form>
+                    </div>
+                    <br />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="row justify-content-center">
+        @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
+        {
+            <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("Search_Type","Product")?page=@k&type=@ViewBag.type">@k</a>
+        }
+    </div>
+}
+else
+{
+    <h1>沒有相關項目</h1>
+}
+
+
+

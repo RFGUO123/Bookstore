@@ -1,0 +1,20 @@
+﻿.text_product_name:hover {
+    color :aqua;
+}
+.text_product_name {
+    color: black;
+}
+.img_box:hover {
+    transform: scale(1.05);
+    transition: 0.5s;
+}
+.img_box {
+    width: 200px;
+    height: 270px;
+    overflow: hidden
+}
+.product_img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

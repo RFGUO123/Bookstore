@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="68e7d90cd8c4474e95ffc2b31bfb3e95" Name="Diagram1">
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tAdministrator" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tMember" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tMessage_Board" Width="1.5" PointX="5.25" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tOrder" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tOrderDetail" Width="1.5" PointX="8.25" PointY="2.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tProduct" Width="1.5" PointX="3" PointY="2.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="ShoppingdatabaseModel.tProductType" Width="1.5" PointX="0.75" PointY="3" IsExpanded="true" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tMember_ToTable" ManuallyRouted="false" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tMessage_Board_ToTable" ManuallyRouted="false" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tOrder_ToTable" ManuallyRouted="false" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tMessage_Board_ToTable_1" ManuallyRouted="false" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tOrderDetail_ToTable_1" ManuallyRouted="false" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tOrderDetail_ToTable" ManuallyRouted="false" />
+        <AssociationConnector Association="ShoppingdatabaseModel.FK_tProduct_ToTable" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

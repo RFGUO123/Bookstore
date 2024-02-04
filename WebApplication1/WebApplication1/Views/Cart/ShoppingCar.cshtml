@@ -1,0 +1,217 @@
+﻿@model IEnumerable<WebApplication1.Models.tOrderDetail>
+@using WebApplication1.Repository;
+
+@section styles {
+    <link href="@Url.Content("~/Styles/ShoppingCar_index.css")" rel="stylesheet" type="text/css" />
+}
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            const message_modal = new bootstrap.Modal('#message-modal', {});
+            $(".cart-item-qty").change(function () {
+                $(".shopping_btn").attr('disabled', true);
+                var cart_item = $(this).parent().parent();
+                var qty = parseInt($(this).val().trim());
+                var pid_ele = $(cart_item).find(".cart-item-pid")[0];
+                var pid = $(pid_ele).html().trim();
+                var pivt_item = $(this).parent()
+                var pivt_ele = $(pivt_item).find(".cart-item-inventory")[0];
+                var pivt = $(pivt_ele).html().trim();                
+                if (qty == 0) {
+                    var check_ok = confirm('確認刪除商品嗎?')
+                    message_modal.show();
+                    if (check_ok == true) {
+                        $.ajax({
+                            url: '/Cart/DeleteCar',
+                            type: 'Post',
+                            data: {
+                                PId: pid,
+                            }, success: function (data) {
+                                $(".shopping_btn").attr('disabled', false);
+                                location.reload();
+                            }, error: function (xhr) {
+                                Swal.fire({
+                                    title: "發生預期外的錯誤誤，請稍後再試",
+                                    allowOutsideClick: false
+                                }).then(function (result) {
+                                    $(".shopping_btn").attr('disabled', false)
+                                    location.reload();
+                                });
+                                //alert("err : \n" + JSON.stringify(xhr));
+                            }
+                        })
+                    }
+                    else {
+                        $(".shopping_btn").attr('disabled', false);
+                        location.reload();
+                    }
+                }
+                else if (qty > pivt) {                    
+                    Swal.fire({
+                        title: "不可超過庫存數量",
+                        allowOutsideClick: false
+                    }).then(function (result) {
+                        $(".shopping_btn").attr('disabled', false)
+                        location.reload();
+                    });       
+                }
+                else {
+                    message_modal.show();
+                    $.ajax({
+                        url: '/Cart/Modify_Car_Count',
+                        dataType: 'json',
+                        type: 'Post',
+                        data: {
+                            PId: pid,
+                            qty: qty
+                        }, success: function (data) {
+                            $(".shopping_btn").attr('disabled', false);
+                            location.reload();
+                        }, error: function (xhr) {
+                            Swal.fire({
+                                title: "發生預期外的錯誤誤，請稍後再試",
+                                allowOutsideClick: false
+                            }).then(function (result) {
+                                $(".shopping_btn").attr('disabled', false)
+                                location.reload();
+                            });
+                        }
+                    })
+                }
+            });
+        })
+    </script>
+}
+
+@{
+    ViewBag.Title = "購物車";
+}
+
+@if (Model.Count() != 0)
+{
+    string title = "購物車";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Home/Index" style="text-decoration: none"><i class="fa-solid fa-house"></i>&ensp;前往賣場</a></span>
+        </div>
+    </div>
+    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table align-middle" style="background-color: white;border-radius: 5px ">
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @{
+                                Product_Repository pr = new Product_Repository();
+                                var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
+                                var ProductInventory = pr.Select_ProductInventory_By_PId(item.ODPId);
+                                var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
+                                string answer;
+                                if (ProductInventory < 0) { ProductInventory = 0; }
+                                if (ProductInventory >= 10)
+                                {
+                                    answer = "庫存大於10本";
+                                }
+                                else
+                                {
+                                    answer = "庫存尚於" + ProductInventory + "本";
+                                }
+                            }
+                            <td style="width :20%">
+                                <img src="~/images/@ProductImg" style="width: 100%; height:100%">
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => ProductName)
+                                <br />
+                                <p style="color: orangered; font-size: 80%">$@Html.DisplayFor(modelItem => item.ODProcuctPrcie)</p>
+                            </td>
+                            <td>
+                                <input type="number" min="0" class="form-control cart-item-qty shopping_btn" value="@item.ODQty" style="width: 100px; display: inline-block ">
+                                <br />
+                                <span style="font-size:75%">&ensp;&ensp;&ensp;(@answer</span>
+                                <span style="font-size:75%">)</span>
+                                <span style="font-size:75%" class="cart-item-inventory" hidden="hidden">@ProductInventory</span>
+                            </td>
+                            <td>
+                                <form action="/Cart/DeleteCar" method="post">
+                                    <input type="submit" value="刪除商品" class="btn btn-danger shopping_btn" onclick="return confirm('確定刪除 @ProductName 嗎?')" />
+                                    <input type="hidden" name="PId" value="@item.ODPId">
+                                </form>
+                            </td>
+                            <td hidden="hidden" class="cart-item-pid">
+                                @Html.DisplayFor(modelItem => item.ODPId)
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="col-md-4" style=" background-color: white; border-radius: 5px;height:160px">
+                <div class="col-form-label row">
+                    <span class="col">商品小記</span>
+                    <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@ViewBag.Total&ensp;&ensp;</span>
+                </div>
+                @{
+                    int ship_price;
+                    if (@ViewBag.total > 500)
+                    {
+                        ship_price = 0;
+                    }
+                    else
+                    {
+                        ship_price = 100;
+                    }
+
+                }
+                <div class="col-form-label row">
+                    <span class="col">運費(滿500免運費)</span>
+                    <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@ship_price&ensp;&ensp;</span>
+                </div>
+                @{
+                    int total_price;
+                    total_price = @ViewBag.total + ship_price;
+                }
+                <div class="col-form-label row">
+                    <span class="col">總額小記</span>
+                    <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@total_price&ensp;&ensp;</span>
+                </div>
+                <form action="@Url.Action("Create", "Order")" method="get">
+                    <div class="form-group row">
+                        <div class="">
+                            <input type="submit" value="前往結帳" class="btn btn-primary shopping_btn" style="width: 100%; max-width: unset; background-color: orangered; border: none" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    string title = "購物車中尚未存在商品";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Home/Index" style="text-decoration: none"><i class="fa-solid fa-house"></i>&ensp;前往賣場</a></span>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="message-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Now Loading</h5>
+            </div>
+            <div class="modal-body">
+                Now Loading
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>

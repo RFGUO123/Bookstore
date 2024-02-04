@@ -1,0 +1,197 @@
+﻿@model WebApplication1.Validate.tMember_val
+
+@section styles{
+    <link href="@Url.Content("~/Styles/Register_index.css")" rel="stylesheet" type="text/css">
+}
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $("#check-email").click(function () {
+                var email = $("#email-text").val().trim();
+                if (email.length == 0) {
+                    alert('請輸入email');
+                    return;
+                }
+                $("#email-result").html("確認中...")
+                $("#email-result").css({ 'color': 'blue' })
+                $.ajax({
+                    url: "/Member/Check_SameEmail",
+                    type: "Post",
+                    datatype: "Json",
+                    data: { email: email },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result == 1) {
+                            $("#email-result").html("Email已被使用")
+                            $("#email-result").css({ 'color': 'red' })
+                        }
+                        else if (data.result == 2) {
+                            $("#email-result").html("這是您目前使用的email")
+                            $("#email-result").css({ 'color': 'red' })
+                        }
+                        else if (data.result == 3) {
+                            $("#email-result").html("email格式不正確")
+                            $("#email-result").css({ 'color': 'red' })
+                        }
+                        else if (data.result == 4) {
+                            $("#email-result").html("驗證成功")
+                            $("#email-result").css({ 'color': 'green' })
+                        }
+                        else {
+                            $("#email-result").html("預期外的錯誤")
+                            $("#email-result").css({ 'color': 'red' })
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("發生預期外的錯誤誤，請稍後再試");
+                        //alert("err : \n" + JSON.stringify(xhr));
+                    }
+                })
+            });
+            $("#check-userId").click(function () {
+                var userid = $("#userId-text").val().trim();
+                if (userid.length == 0) {
+                    alert('請輸入帳號');
+                    return;
+                }
+                $("#userId-result").html("確認中...")
+                $("#userId-result").css({ 'color': 'blue' })
+                $.ajax({
+                    url: "/Member/Check_SameUserId",
+                    type: "Post",
+                    datatype: "Json",
+                    data: { userid: userid },
+                    success: function (data) {
+                        data = JSON.parse(data);
+                        if (data.result == 1) {
+                            $("#userId-result").html("帳號已被使用")
+                            $("#userId-result").css({ 'color': 'red' })
+                        }
+                        else if (data.result == 2) {
+                            $("#userId-result").html("驗證成功")
+                            $("#userId-result").css({ 'color': 'green' })
+                        }
+                        else {
+                            $("#userId-result").html("預期外的錯誤")
+                            $("#userId-result").css({ 'color': 'red' })
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("發生預期外的錯誤誤，請稍後再試");
+                        //alert("err : \n" + JSON.stringify(xhr));
+                    }
+                })
+            })
+        })
+    </script>
+}
+
+@{
+    ViewBag.Title = "免費註冊";
+}
+
+@if (ViewBag.success != null)
+{
+    <span class="col" style="font-size: 300%; font-weight: bolder; margin: 0px; border: 0px; padding: 0px ">@ViewBag.success</span>
+    <span style="font-size: 150%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end">&ensp;&ensp;&ensp;前往<a href="/Member/Login" style="text-decoration: none">登入</a></span>
+}
+else
+{
+    <div class="container">
+        <br />
+        <div class="row" style="padding: 7px;background-color: #FFD1A4; border-radius: 20px; font-weight: bold">
+            &ensp;&ensp;免費註冊一般會員
+        </div>
+        <br />
+        <div class="row">
+            <div class="offset-md-2 col-md-8" style="background-color: white;border-radius:5px ">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+                    <br />
+                    <div class="row " style="background-color: #ECFFFF; padding: 7px; margin-left: 10px; margin-right: 10px; border-radius: 5px; font-weight: bold ">
+                        &ensp;&ensp;設定帳號與密碼
+                    </div>
+                    <br />
+                    <div class="form-horizontal">
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.MUserId, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.MUserId, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "userId-text" } })
+                                @Html.ValidationMessageFor(model => model.MUserId, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                <span><a class="btn btn-primary" id="check-userId">檢查帳號可用性</a></span>
+                                <span id="userId-result"></span>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.MPassword, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            <div class="col-md-4">
+                                @Html.PasswordFor(model => model.MPassword, new { @class = "form-control", @style = "width:100%;max-width:unset" })
+                                @Html.ValidationMessageFor(model => model.MPassword, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.MPassword2, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            <div class="col-md-4">
+                                @Html.PasswordFor(model => model.MPassword2, new { @class = "form-control", @style = "width:100%;max-width:unset" })
+                                @Html.ValidationMessageFor(model => model.MPassword2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+                        <div class="row " style="background-color: #ECFFFF; padding: 7px; margin-left: 10px; margin-right: 10px; border-radius: 5px; font-weight: bold ">
+                            &ensp;&ensp;填寫個人基本資料
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.MName, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.MName, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset" } })
+                                @Html.ValidationMessageFor(model => model.MName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.MEmail, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.MEmail, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "email-text" } })
+                                @Html.ValidationMessageFor(model => model.MEmail, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-4">
+                                <span><a class="btn btn-primary" id="check-email">檢查信箱可用性</a></span>
+                                <span id="email-result"></span>
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.MPhone, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.MPhone, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset;" } })
+                                @Html.ValidationMessageFor(model => model.MPhone, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <br />
+
+                        <div class="form-group row">
+                            <label class="control-label col-md-4"></label>
+                            <div class="col-md-4">
+                                <input type="submit" value="確認註冊" class="btn btn-primary" style="background-color:orangered;border-radius:5px;width:100%;border:none" />
+                            </div>
+                        </div>
+                        <br />
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="row ">
+            @Html.ActionLink("返回登入頁面", "Login", "Member")
+        </div>
+    </div>
+}

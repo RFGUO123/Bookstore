@@ -1,0 +1,129 @@
+﻿@model IEnumerable<WebApplication1.Models.tOrder>
+@using WebApplication1.Repository
+
+@section styles{
+    <link href="@Url.Content("~/Styles/ShowOrderList_index.css")" rel="stylesheet" type="text/css" />
+}
+
+@{
+    ViewBag.Title = "會員訂單一覽";
+}
+
+@if (Model.Count() != 0)
+{
+    string title = "您有" + Model.Count() + "筆已完成的訂單";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Home/index" style="text-decoration: none"><i class="fa-solid fa-house"></i>&ensp;前往賣場</a></span>
+        </div>
+    </div>
+    <br />
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead style="background-color: #ECFFFF ">
+                <tr style="text-align:center">
+                    <th>
+                        結帳日期
+                    </th>
+                    <th>
+                        商品名稱
+                    </th>
+                    <th>
+                        購買數量
+                    </th>
+                    <th>
+                        商品單價
+                    </th>
+                    <th>
+                        運費金額
+                    </th>
+                    <th>
+                        訂單總金額
+                    </th>
+                    <th>
+                        訂單管理
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    OrderDetail_Repository or = new OrderDetail_Repository();
+                    Product_Repository pr = new Product_Repository();
+                    var orderdetails = or.Select_OrderDetail_By_OId(item.OId);
+                    string first_product_name = pr.Select_ProductName_By_PId(orderdetails[0].ODPId);
+                    int total_count = orderdetails.Count();
+
+                    <tr>
+                        <td style="text-align: center" rowspan="@total_count">
+                            @{
+                                DateTime time = (DateTime)item.ODate;
+                                string show = time.ToString("d");
+                            }
+                            @show
+                        </td>
+                        <td>
+                            @first_product_name
+                        </td>
+                        <td style="text-align: center">
+                            @orderdetails[0].ODQty
+                        </td>
+                        <td style="text-align: center">
+                            $@orderdetails[0].ODProcuctPrcie
+                        </td>
+                        <td style="text-align: center" rowspan="@total_count">
+                            $@Html.DisplayFor(modelItem => item.OShipPrice)
+                        </td>
+                        <td style="text-align: center" rowspan="@total_count">
+                            @{
+                                int? total_price = item.OShipPrice + item.OPrice;
+                            }
+                            $@Html.DisplayFor(modelItem => total_price)
+                        </td>
+                        <td style="text-align: center" rowspan="@total_count">
+                            @Html.ActionLink("查看訂單明細", "ShowOrderDetail", new { OId = item.OId }, new { @class = "btn btn-primary" })
+                        </td>
+                    </tr>
+                    if (total_count > 1)
+                    {
+                        for (int i = 1; i < total_count; i++)
+                        {
+                            string product_name = pr.Select_ProductName_By_PId(orderdetails[i].ODPId);
+                            <tr>
+                                <td>
+                                    @product_name
+                                </td>
+                                <td style="text-align: center">
+                                    @orderdetails[i].ODQty
+                                </td>
+                                <td style="text-align: center">
+                                    $@orderdetails[i].ODProcuctPrcie
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row justify-content-center">
+        @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
+        {
+            <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("ShowOrderList","Order")?page=@k">@k</a>
+        }
+    </div>
+}
+else
+{
+
+    string title = "您尚未建立任何訂單，快去購物吧!";
+    <div class="container">
+        <div class="row">
+            <span class="col" style="font-size: x-large">@title</span>
+            <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end"><a href="/Home/Index" style="text-decoration: none"><i class="fa-solid fa-house"></i>&ensp;前往賣場</a></span>
+        </div>
+    </div>
+}
+

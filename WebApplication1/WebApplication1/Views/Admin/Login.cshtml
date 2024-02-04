@@ -1,0 +1,57 @@
+﻿@model WebApplication1.Models.tAdministrator
+
+@{
+    ViewBag.Title = "管理者登入";
+}
+
+@section styles {
+    <link href="@Url.Content("~/Styles/AdminLogin_index.css")" rel="stylesheet" type="text/css" />
+}
+<div class="container offset-md-4 col-md-4">
+    <div class="row">
+        <span class="col" style="font-size: 140%; font-weight: bolder; margin: 0px; border: 0px; padding: 0px ">管理者登入</span>
+    </div>
+    <br />
+</div>
+
+@using (Html.BeginForm("Login", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="container offset-md-4 col-md-4" style="background-color: white; border-radius: 5px ">
+        <div>
+            <br />
+            <div class="form-group">
+                <div class="row">
+                    <div class="control-label">帳號</div>
+                </div>
+                <div class="row">
+                    <div style="position: relative; top: 10px;"><input style="width:100%;max-width:unset;" type="text" id="AUserId" name="AUserId" required class="form-control"></div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <div class="row">
+                    <div class="control-label">密碼</div>
+                </div>
+                <div class="row">
+                    <div style="position: relative; top: 10px;"><input style="width:100%;max-width:unset;" type="password" id="APassword" name="APassword" required class="form-control"></div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group row">
+                <div class="col">
+                    <input type="submit" value="管理者登入" class="btn btn-primary submit-btn" style="width: 100%; max-width: unset; background-color: orangered; border: none">
+                    <p class="text-danger">@ViewBag.Error</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+
+
+
+
+
+

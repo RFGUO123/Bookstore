@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "會員登入";
+}
+@section styles {
+    <link href="@Url.Content("~/Styles/login_index.css")" rel="stylesheet" type="text/css" />
+}
+<div class="container offset-md-4 col-md-4">
+    <div class="row">
+        <span class="col" style="font-size: 140%; font-weight: bolder; margin: 0px; border: 0px; padding: 0px ">登入</span>
+        <span style="font-size: 90%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end">新會員?前往<a href="/Member/Register" style="text-decoration: none">註冊</a></span>
+    </div>
+    <br />
+</div>
+<form action="@Url.Action("Login","Member")" method="Post">
+    <div class="container offset-md-4 col-md-4" style="background-color: white; border-radius: 5px ">
+        <div>
+            <br />
+            <div class="form-group">
+                <div class="row">
+                    <div class="control-label">帳號</div>
+                </div>
+                <div class="row">
+                    <div style="position: relative; top: 10px;"><input style="width:100%;max-width:unset;" type="text" id="UserId" name="UserId" required class="form-control"></div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <div class="row">
+                    <div class="control-label">密碼</div>
+                </div>
+                <div class="row">
+                    <div style="position: relative; top: 10px;"><input style="width:100%;max-width:unset;" type="password" id="Password" name="Password" required class="form-control"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <br />
+                <div class="row">
+                    @Html.ActionLink("忘記密碼", "Forget_Password", "Member", new { area = "" }, new { style = "text-decoration:none; width:100%;", @class = "text-end" })
+                </div>
+            </div>
+            <br />
+            <div class="form-group row">
+                <div class="col">
+                    <input type="submit" value="登入基拉書局" class="btn btn-primary submit-btn" style="width: 100%; max-width: unset; background-color: orangered; border: none">
+                    <p class="text-danger">@ViewBag.Error</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div style="background-color: black; width: 100%; height: 0.5px; position: relative ">
+                        <div class="text-center" style="padding:0 1%; position: absolute; background-color: white;left:48%; color: black; transform: translateY(-50%); ">或</div>
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col">
+                    <a href="@ViewBag.Login" class="btn btn-primary" style="width: 100%; max-width: unset; background-color: white; color:black"><i class="fa-brands fa-google" style="color:red"></i>&ensp;Google</a>
+                    <p class="text-danger">@ViewBag.OAuth_Error</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

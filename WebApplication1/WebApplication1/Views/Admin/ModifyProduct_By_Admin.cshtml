@@ -1,0 +1,126 @@
+﻿@model WebApplication1.Validate.tProduct_val
+@using WebApplication1.Repository;
+
+@section styles{
+    <link href="@Url.Content("~/Styles/ModifyProduct_By_Admin_index.css")" rel="stylesheet" type="text/css">
+}
+
+@section Scripts{
+    <script>
+        $('#imgfile').on('change', function (e) {
+            const file = this.files[0]
+            const fr = new FileReader()
+            fr.onload = function (e) {
+                $('#showimg').attr('src', e.target.result);
+            };
+            fr.readAsDataURL(file);
+        });
+    </script>
+}
+
+@{
+    ViewBag.Title = "修改產品資訊";
+}
+
+<div class="container">
+    <br />
+    <div class="row" style="padding: 7px;background-color: #FFD1A4; border-radius: 20px; font-weight: bold">
+        &ensp;&ensp;修改產品資訊
+    </div>
+    <br />
+</div>
+<div class="container">
+    <div class="row">
+        <div class="offset-md-1 col-md-9" style="background-color: white;border-radius:5px ">
+            @using (Html.BeginForm("ModifyProduct_By_Admin", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                ProductType_Repository ptr = new ProductType_Repository();
+                var producttypes = ptr.Select_All_ProductType();
+                List<SelectListItem> mySelectItemList = new List<SelectListItem>();
+                foreach (var item in producttypes)
+                {
+                    if (item.PTName == Model.PTypeName)
+                    {
+                        mySelectItemList.Add(new SelectListItem()
+                        {
+                            Text = item.PTName,
+                            Value = item.PTName,
+                            Selected = true
+                        });
+                    }
+                    else
+                    {
+                        mySelectItemList.Add(new SelectListItem()
+                        {
+                            Text = item.PTName,
+                            Value = item.PTName,
+                            Selected = false
+                        });
+                    }
+                }
+                @Html.AntiForgeryToken()
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <img id="showimg" src="~/images/@Model.PImg" style="width:100%;">
+                        </div>
+                        <div class="col-md-7" style="background-color: #ECFFFF ;border-radius: 5px ">
+                            <br />
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PName, htmlAttributes: new { @class = "control-label col-md-2 text-end align-self-center" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.PName, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "email-text" } })
+                                    @Html.ValidationMessageFor(model => model.PName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PPrice, htmlAttributes: new { @class = "control-label col-md-2 text-end align-self-center" })
+                                <div class="col-md-4">
+                                    @Html.EditorFor(model => model.PPrice, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "email-text", @min = 0 } })
+                                    @Html.ValidationMessageFor(model => model.PPrice, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PInventory, htmlAttributes: new { @class = "control-label col-md-2 text-end align-self-center" })
+                                <div class="col-md-4">
+                                    @Html.EditorFor(model => model.PInventory, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "email-text", @min = 0 } })
+                                    @Html.ValidationMessageFor(model => model.PInventory, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PTypeName, htmlAttributes: new { @class = "control-label col-md-2 text-end align-self-center" })
+                                <div class="col-md-4">
+                                    @Html.DropDownListFor(m => m.PTypeName, mySelectItemList, new { @class = "dropdown" })
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    <label for="imgfile" class="btn btn-info">
+                                        <input name="photo" id="imgfile" style="display:none;" type="file">
+                                        <i class="fa fa-photo"></i> 修改商品圖片
+                                    </label>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="form-group row">
+                                <label class="control-label col-md-4"></label>
+                                <div class="col-md-4">
+                                    <input type="hidden" name="PId" value="@Model.PId">
+                                    <input type="submit" value="確認修改" class="btn btn-primary" style="background-color:orangered;border-radius:5px;width:100%;border:none" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <br />
+    <div>
+        @Html.ActionLink("返回商品總覽", "ShowAllProductList", "Admin")
+    </div>
+</div>
