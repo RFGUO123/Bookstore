@@ -14,7 +14,7 @@ namespace WebApplication1.Util.Mail
             System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
             try
             {
-                string url = Util.App_Setting.Set.Set_By_Domain_and_Guid(url_information, guid);               
+                string url = Util.App_Setting.Set.Set_By_Domain_and_Guid(url_information, guid);
                 msg.To.Add(to_email);
                 msg.From = new MailAddress(from_email, "AAA", System.Text.Encoding.UTF8);
                 msg.Subject = subject;

@@ -11,7 +11,8 @@ namespace WebApplication1.Util.OAuth
 {
     public class Google
     {
-        public static NameValueCollection Set_Parameters_For_Get_Request_Token(string code, string client_id, string client_secret, string redirect_uri_information, string grant_type)
+        public static NameValueCollection Set_Parameters_For_Get_Request_Token(string code, string client_id, string client_secret, 
+            string redirect_uri_information, string grant_type)
         {
             NameValueCollection parameters_for_request_token = new NameValueCollection();
             string redirect_uri = Util.App_Setting.Set.Set_By_Domain("/Member/OAuth_Google");

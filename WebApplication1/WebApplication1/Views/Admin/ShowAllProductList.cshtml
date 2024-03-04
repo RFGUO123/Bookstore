@@ -25,22 +25,22 @@
         <table class="table align-middle">
             <thead style="background-color: #ECFFFF ">
                 <tr style="text-align:center">
-                    <th style="width :20%">
+                    <th>
                         樣式
                     </th>
                     <th>
                         名稱
                     </th>
-                    <th>
-                        剩餘數量
+                    <th style="white-space: nowrap">
+                        庫存數
                     </th>
                     <th>
                         單價
                     </th>
-                    <th>
-                        類別
+                    <th style="white-space: nowrap">
+                        商品類別
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         商品管理
                     </th>
                 </tr>
@@ -51,8 +51,8 @@
                     Product_Repository pr = new Product_Repository();
                     string Typename = pr.Select_ProductType_By_TypeId(item.PTypeId);
                     <tr>
-                        <td style=" width :20%">
-                            <img src="~/images/@item.PImg" style="width: 100%; height:100%">
+                        <td align="center">
+                            <img src="~/images/@item.PImg" style="width: 100px; height:100px">
                         </td>
                         <td style="text-align: center">
                             @item.PName
@@ -76,7 +76,7 @@
                             @Typename
                         </td>
                         <td style="text-align: center">
-                            @Html.ActionLink("強制修改", "ModifyProduct_By_Admin", new { PId = item.PId }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("修改資料", "ModifyProduct_By_Admin", new { PId = item.PId }, new { @class = "btn btn-primary" })
                             <br />
                             <br />
                             @if (item.PAvailable == true)

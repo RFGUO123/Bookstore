@@ -26,22 +26,22 @@
                     <th>
                         結帳日期
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         商品名稱
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         購買數量
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         商品單價
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         運費金額
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         訂單總金額
                     </th>
-                    <th>
+                    <th style="white-space: nowrap">
                         訂單管理
                     </th>
                 </tr>
@@ -82,7 +82,7 @@
                             $@Html.DisplayFor(modelItem => total_price)
                         </td>
                         <td style="text-align: center" rowspan="@total_count">
-                            @Html.ActionLink("查看訂單明細", "ShowOrderDetail", new { OId = item.OId }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("查看", "ShowOrderDetail", new { OId = item.OId }, new { @class = "btn btn-primary" })
                         </td>
                     </tr>
                     if (total_count > 1)

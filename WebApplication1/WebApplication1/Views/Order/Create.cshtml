@@ -13,32 +13,37 @@
     <div class="container">
         <h4>結帳</h4>
         <div class="row">
-            <div class="col-md-8">
-                <table class="table align-middle" style="background-color: white;border-radius: 5px ;margin-right:0px ; padding-right:0px">
-                    @foreach (var item in ViewBag.ShoppingCar)
-                    {
-                        <tr class="align-middle">
-                            @{
-                                Product_Repository pr = new Product_Repository();
-                                var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
-                                var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
+            <div class="col-lg-8" style="padding-bottom:10px;margin-bottom:10px">
+                <div class="table-responsive">
+                    <table class="table align-middle" style="background-color: white;border-radius: 5px">
+                        <tbody>
+                            @foreach (var item in ViewBag.ShoppingCar)
+                            {
+                                <tr class="align-middle">
+                                    @{
+                                        Product_Repository pr = new Product_Repository();
+                                        var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
+                                        var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
+                                    }
+                                    <td align="center" style="min-width:150px">
+                                        <img src="~/images/@ProductImg" style="width: 100px; height:100px">
+                                    </td>
+                                    <td style="min-width: 100px">
+                                        @ProductName
+                                        <br />
+                                        <p style="color: orangered; font-size: 80%">$@item.ODProcuctPrcie</p>
+                                    </td>
+                                    <td style="white-space: nowrap">
+                                        x @item.ODQty
+                                    </td>
+                                </tr>
                             }
-                            <td style="width :20%">
-                                <img src="~/images/@ProductImg" style="width: 100%; height:100%">
-                            </td>
-                            <td>
-                                @ProductName
-                                <br />
-                                <p style="color: orangered; font-size: 80%">$@item.ODProcuctPrcie</p>
-                            </td>
-                            <td>
-                                x @item.ODQty
-                            </td>
-                        </tr>
-                    }
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-4" style=" background-color: white; border-radius: 5px;height:450px">
+            <br />
+            <div class="col-lg-4" style=" background-color: white; border-radius: 5px;height:450px">
                 <div class="col-form-label row">
                     <span class="col">商品小記</span>
                     <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@ViewBag.Total&ensp;&ensp;</span>
@@ -70,32 +75,32 @@
                 <br />
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.OReceiver, htmlAttributes: new { @class = "control-label col-md-3 text-center align-self-center" })
-                    <div class="col-md-8">
-                        @Html.EditorFor(model => model.OReceiver, new { htmlAttributes = new { @class = "form-control" ,@style = "width:100%"} } )
+                    @Html.LabelFor(model => model.OReceiver, htmlAttributes: new { @class = "control-label col-5 text-center align-self-center" })
+                    <div class="col-6">
+                        @Html.EditorFor(model => model.OReceiver, new { htmlAttributes = new { @class = "form-control", @style = "width:100%" } })
                         @Html.ValidationMessageFor(model => model.OReceiver, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <br />
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.OEmail, htmlAttributes: new { @class = "control-label col-md-3 text-center align-self-center" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.OEmail, htmlAttributes: new { @class = "control-label col-5 text-center align-self-center" })
+                    <div class="col-6">
                         @Html.EditorFor(model => model.OEmail, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.OEmail, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <br />
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.OAddress, htmlAttributes: new { @class = "control-label col-md-3 text-center align-self-center" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.OAddress, htmlAttributes: new { @class = "control-label col-5 text-center align-self-center" })
+                    <div class="col-6">
                         @Html.EditorFor(model => model.OAddress, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.OAddress, "", new { @class = "text-danger" })
                     </div>
                 </div>
                 <br />
                 <div class="form-group row">
-                    @Html.LabelFor(model => model.OPhone, htmlAttributes: new { @class = "control-label col-md-3 text-center align-self-center" })
-                    <div class="col-md-8">
+                    @Html.LabelFor(model => model.OPhone, htmlAttributes: new { @class = "control-label col-5 text-center align-self-center" })
+                    <div class="col-6">
                         @Html.EditorFor(model => model.OPhone, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.OPhone, "", new { @class = "text-danger" })
                     </div>

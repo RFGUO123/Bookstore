@@ -45,6 +45,11 @@ namespace WebApplication1.Service
 
         public String Register(tMember_val member_val)
         {
+            string regex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+            if (Regex.IsMatch(member_val.MEmail, regex) == false)
+            {
+                return "Regex_Fail";
+            }
             var merber = mr.Select_Member_By_UserId(member_val.MUserId);
             if (merber != null)
             {
@@ -81,6 +86,11 @@ namespace WebApplication1.Service
         }
         public String Modify_Information(string MId, tMember_Information_val member_information_val, System.Web.HttpSessionStateBase Session)
         {
+            string regex = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
+            if (Regex.IsMatch(member_information_val.MEmail, regex) == false)
+            {
+                return "Regex_Fail";
+            }
             tMember merber = mr.Select_Member_By_Email(member_information_val.MEmail);
             if (merber != null)
             {
@@ -105,10 +115,10 @@ namespace WebApplication1.Service
         {
             string guid = Guid.NewGuid().ToString();
             mr.Set_Password_Guid(UserId,guid);
-            return Util.Mail.SMTP.Sent_email_by_gmail(guid, "/Member/Reset_Password?guid=", "atta6787@gmail.com", "cyc922611@gmail.com",
+            return Util.Mail.SMTP.Sent_email_by_gmail(guid, "/Member/Reset_Password?guid=", email, "cyc922611@gmail.com",
                 "[基拉書局]忘記密碼通知",
                 @"<h4>親愛的用戶您好:</h4><br/><p>感謝您光臨基拉書局，您已可以修改密碼，請使用下方連結進行修改，祝您使用愉快。<p><br/><br/><a href='",
-                "'>前往重設密碼</a>",true);            
+                "'>前往重設密碼</a>",true);
         }
         public Boolean Check_Guid(string guid)
         {

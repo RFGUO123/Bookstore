@@ -101,56 +101,61 @@
     <br />
     <div class="container">
         <div class="row">
-            <div class="col-md-8">
-                <table class="table align-middle" style="background-color: white;border-radius: 5px ">
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            @{
-                                Product_Repository pr = new Product_Repository();
-                                var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
-                                var ProductInventory = pr.Select_ProductInventory_By_PId(item.ODPId);
-                                var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
-                                string answer;
-                                if (ProductInventory < 0) { ProductInventory = 0; }
-                                if (ProductInventory >= 10)
-                                {
-                                    answer = "庫存大於10本";
-                                }
-                                else
-                                {
-                                    answer = "庫存尚於" + ProductInventory + "本";
-                                }
+            <div class="col-md-8" style="padding-bottom:10px;margin-bottom:10px">
+                <div class="table-responsive">
+                    <table class="table align-middle" style="background-color: white;border-radius: 5px">
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    @{
+                                        Product_Repository pr = new Product_Repository();
+                                        var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
+                                        var ProductInventory = pr.Select_ProductInventory_By_PId(item.ODPId);
+                                        var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
+                                        string answer;
+                                        if (ProductInventory < 0) { ProductInventory = 0; }
+                                        if (ProductInventory >= 10)
+                                        {
+                                            answer = "庫存大於10本";
+                                        }
+                                        else
+                                        {
+                                            answer = "庫存尚於" + ProductInventory + "本";
+                                        }
+                                    }
+                                    <td align="center">
+                                        <img src="~/images/@ProductImg" style="width: 100px; height: 100px">
+                                    </td>
+                                    <td style="min-width: 100px">
+                                        @Html.DisplayFor(modelItem => ProductName)
+                                        <br />
+                                        <p style="color: orangered; font-size: 80%">$@Html.DisplayFor(modelItem => item.ODProcuctPrcie)</p>
+                                    </td>
+                                    <td style="white-space: nowrap">
+                                        <input type="number" min="0" class="form-control cart-item-qty shopping_btn" value="@item.ODQty" style="width: 60px; display: inline-block ">
+                                        <br />
+                                        <span style="font-size:75%">(@answer</span>
+                                        <span style="font-size:75%">)</span>
+                                        <span style="font-size:75%" class="cart-item-inventory" hidden="hidden">@ProductInventory</span>
+                                    </td>
+                                    <td style="white-space: nowrap">
+                                        <form action="/Cart/DeleteCar" method="post">
+                                            <input type="submit" value="刪除" class="btn btn-danger shopping_btn" onclick="return confirm('確定刪除 @ProductName 嗎?')" />
+                                            <input type="hidden" name="PId" value="@item.ODPId">
+                                        </form>
+                                    </td>
+                                    <td hidden="hidden" class="cart-item-pid">
+                                        @Html.DisplayFor(modelItem => item.ODPId)
+                                    </td>
+                                </tr>
                             }
-                            <td style="width :20%">
-                                <img src="~/images/@ProductImg" style="width: 100%; height:100%">
-                            </td>
-                            <td>
-                                @Html.DisplayFor(modelItem => ProductName)
-                                <br />
-                                <p style="color: orangered; font-size: 80%">$@Html.DisplayFor(modelItem => item.ODProcuctPrcie)</p>
-                            </td>
-                            <td>
-                                <input type="number" min="0" class="form-control cart-item-qty shopping_btn" value="@item.ODQty" style="width: 100px; display: inline-block ">
-                                <br />
-                                <span style="font-size:75%">&ensp;&ensp;&ensp;(@answer</span>
-                                <span style="font-size:75%">)</span>
-                                <span style="font-size:75%" class="cart-item-inventory" hidden="hidden">@ProductInventory</span>
-                            </td>
-                            <td>
-                                <form action="/Cart/DeleteCar" method="post">
-                                    <input type="submit" value="刪除商品" class="btn btn-danger shopping_btn" onclick="return confirm('確定刪除 @ProductName 嗎?')" />
-                                    <input type="hidden" name="PId" value="@item.ODPId">
-                                </form>
-                            </td>
-                            <td hidden="hidden" class="cart-item-pid">
-                                @Html.DisplayFor(modelItem => item.ODPId)
-                            </td>
-                        </tr>
-                    }
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <div class="col-md-4" style=" background-color: white; border-radius: 5px;height:160px">
+            <br />
+            <div class="col-md-4" style=" background-color: white; border-radius: 5px;height:180px">
                 <div class="col-form-label row">
                     <span class="col">商品小記</span>
                     <span style="color: orangered; margin: 0px; border: 0px; padding: 0px " class="col text-end align-self-end">$@ViewBag.Total&ensp;&ensp;</span>

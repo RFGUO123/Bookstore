@@ -19,7 +19,6 @@ namespace WebApplication1.Util.App_Setting
         public static string Get_Response(string url , NameValueCollection parameters)
         {
             WebClient webClient = new WebClient();
-            set_user_agent_header(webClient);
             webClient.Encoding = Encoding.UTF8;
             webClient.QueryString = parameters;
             // webClient.Headers.Add("xxx","yyy"); >>>預設的會蓋過去，沒有的會加上去

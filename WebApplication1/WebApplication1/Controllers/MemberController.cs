@@ -72,18 +72,23 @@ namespace WebApplication1.Controllers
             string result = ms.Register(member);
             if (result == "Email")
             {
-                ViewBag.Error = "信箱已有人使用，註冊失敗";
-                return View();
+                ViewBag.Error = "信箱已被人使用";
+                return View(member);
             }
             else if (result == "UserId")
             {
-                ViewBag.Error = "帳號已有人使用，註冊失敗";
-                return View();
+                ViewBag.Error = "帳號已被人使用";
+                return View(member);
+            }
+            else if (result == "Regex_Fail")
+            {
+                ViewBag.Error = "信箱格式錯誤";
+                return View(member);
             }
             else
             {
                 ViewBag.success = "註冊成功";
-                return View();
+                return View(member);
             }
         }
 
@@ -129,9 +134,14 @@ namespace WebApplication1.Controllers
             }
             string result = ms.Modify_Information(User.Identity.Name, member_information_val, Session);
             if(result == "Email")
-            {
+            {               
                 ViewBag.Validate_Email_Fail = "信箱已被使用";
-                return View();
+                return View(member_information_val);
+            }
+            else if (result == "Regex_Fail")
+            {
+                ViewBag.Email_Check_Fail = "Email格式錯誤";
+                return View(member_information_val);
             }
             return RedirectToAction("Show_Member_Information", "Member");
         }
@@ -196,7 +206,7 @@ namespace WebApplication1.Controllers
             }
             if(ms.Reset_Password(member.MPassword,member.MResetPassword) == true)
             {
-                ViewBag.success = "密碼修改成功";
+                ViewBag.success = "修改成功";
             }
             else
             {
@@ -313,7 +323,7 @@ namespace WebApplication1.Controllers
             string email = "";
             string user_id = "";
             Util.OAuth.Google.Get_Email_and_Userid(parameters_for_user_information, "https://www.googleapis.com/oauth2/v2/tokeninfo",
-                ref email, ref user_id);           
+                ref email, ref user_id);
             try
             {
                 string result = ms.OAuth_Login("Google", email, user_id);

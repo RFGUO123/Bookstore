@@ -19,8 +19,7 @@ namespace WebApplication1.Util.Member
             Set_Session_Welcome(name, Session);
         }
         public static void Set_Session_Welcome(string Name, System.Web.HttpSessionStateBase Session)
-        {
-           
+        {          
             Session["Welcome"] =  Name + "歡迎光臨";
         }
         public static void Clear_Login_session()

@@ -2,7 +2,7 @@
 @using WebApplication1.Repository;
 
 @section styles{
-    <link href="@Url.Content("~/Styles/ShowOrderDetail_index.css")" rel="stylesheet" type="text/css" />    
+    <link href="@Url.Content("~/Styles/ShowOrderDetail_index.css")" rel="stylesheet" type="text/css" />
 }
 
 @{
@@ -11,12 +11,11 @@
 
 @if (Model != null)
 {
+    Order_Repository or = new Order_Repository();
+    var ShoppingDate = (DateTime)or.Select_ShoppingDate_By_OId(Model.ToList()[0].ODOId);
+    string ShowInformation = "已在" + ShoppingDate.ToString("d") + "完成訂單";
+
     <div class="container">
-        @{
-            Order_Repository or = new Order_Repository();
-            var ShoppingDate = (DateTime)or.Select_ShoppingDate_By_OId(Model.ToList()[0].ODOId);
-            string ShowInformation = "已在" + ShoppingDate.ToString("d") + "完成訂單";
-        }
         <h4>您的訂單內容</h4>
         <div class="row">
             <span class="col" style="color:darkorange;font-size: large;">@ShowInformation</span>
@@ -24,35 +23,38 @@
         </div>
         <br />
         <div class="row">
-            <div class="col-md-8">
-                <table class="table align-middle" style="background-color: white;border-radius: 5px ">
-                    @foreach (var item in Model)
-                    {
-                        <tr class="align-middle">
-                            @{
+            <div class="col-md-8" style="padding-bottom:10px;margin-bottom:10px">
+                <div class="table-responsive">
+                    <table class="table align-middle" style="background-color: white;border-radius: 5px">
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
                                 Product_Repository pr = new Product_Repository();
                                 var ProductName = pr.Select_ProductName_By_PId(item.ODPId);
                                 var ProductImg = pr.Select_ProductImg_By_PId(item.ODPId);
                                 var total_money = item.ODProcuctPrcie * item.ODQty;
+                                <tr>
+                                    <td align="center">
+                                        <img src="~/images/@ProductImg" style="width: 100px; height:100px">
+                                    </td>
+                                    <td style="min-width:150px">
+                                        @ProductName
+                                        <br />
+                                        <p style="color: orangered; font-size: 80%">$@item.ODProcuctPrcie</p>
+                                    </td>
+                                    <td class="text-end" style="white-space: nowrap">
+                                        x @item.ODQty
+                                    </td>
+                                    <td class="text-end">
+                                        $@total_money&ensp;&ensp;
+                                    </td>
+                                </tr>
                             }
-                            <td style="width :20%">
-                                <img src="~/images/@ProductImg" style="width: 100%; height:100%">
-                            </td>
-                            <td>
-                                @ProductName
-                                <br />
-                                <p style="color: orangered; font-size: 80%">$@item.ODProcuctPrcie</p>
-                            </td>
-                            <td class="text-end">
-                                x @item.ODQty
-                            </td>
-                            <td class="text-end">
-                                $@total_money&ensp;&ensp;
-                            </td>
-                        </tr>
-                    }
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            <br />
             <div class="col-md-4" style=" background-color: white; border-radius: 5px;height:120px">
                 <div class="col-form-label row">
                     <span class="col">商品小記</span>
@@ -85,9 +87,10 @@
             </div>
         </div>
     </div>
-}
+
+ }
 else
 {
-<h1>此筆訂單不存在</h1>
+    <h1>此筆訂單不存在</h1>
 }
 

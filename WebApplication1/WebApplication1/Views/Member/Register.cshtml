@@ -93,14 +93,14 @@
 
 @if (ViewBag.success != null)
 {
-    <span class="col" style="font-size: 300%; font-weight: bolder; margin: 0px; border: 0px; padding: 0px ">@ViewBag.success</span>
-    <span style="font-size: 150%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end">&ensp;&ensp;&ensp;前往<a href="/Member/Login" style="text-decoration: none">登入</a></span>
+    <span class="col" style="font-size: 150%; font-weight: bolder; margin: 0px; border: 0px; padding: 0px ">@ViewBag.success</span>
+    <span style="font-size: 100%; margin:0px; border:0px ; padding:0px" class="col text-end align-self-end">&ensp;&ensp;前往<a href="/Member/Login" style="text-decoration: none">登入</a></span>
 }
 else
 {
     <div class="container">
         <br />
-        <div class="row" style="padding: 7px;background-color: #FFD1A4; border-radius: 20px; font-weight: bold">
+        <div class="row justify-content-center justify-content-md-start" style="padding: 7px; background-color: #FFD1A4; border-radius: 20px; font-weight: bold">
             &ensp;&ensp;免費註冊一般會員
         </div>
         <br />
@@ -110,25 +110,28 @@ else
                 {
                     @Html.AntiForgeryToken()
                     <br />
-                    <div class="row " style="background-color: #ECFFFF; padding: 7px; margin-left: 10px; margin-right: 10px; border-radius: 5px; font-weight: bold ">
+                    <div class="row justify-content-center justify-content-md-start" style="background-color: #ECFFFF; padding: 7px; margin-left: 10px; margin-right: 10px; border-radius: 5px; font-weight: bold ">
                         &ensp;&ensp;設定帳號與密碼
                     </div>
                     <br />
                     <div class="form-horizontal">
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.MUserId, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            @Html.LabelFor(model => model.MUserId, htmlAttributes: new { @class = "control-label col-md-4 text-start text-md-end align-self-center" })
                             <div class="col-md-4">
                                 @Html.EditorFor(model => model.MUserId, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "userId-text" } })
                                 @Html.ValidationMessageFor(model => model.MUserId, "", new { @class = "text-danger" })
                             </div>
-                            <div class="col-md-4">
+                        </div>
+                        <br />
+                        <div class="form-group row">
+                            <div class="offset-md-4 col-md-8">
                                 <span><a class="btn btn-primary" id="check-userId">檢查帳號可用性</a></span>
                                 <span id="userId-result"></span>
                             </div>
                         </div>
                         <br />
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.MPassword, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            @Html.LabelFor(model => model.MPassword, htmlAttributes: new { @class = "control-label col-md-4 text-start text-md-end align-self-center" })
                             <div class="col-md-4">
                                 @Html.PasswordFor(model => model.MPassword, new { @class = "form-control", @style = "width:100%;max-width:unset" })
                                 @Html.ValidationMessageFor(model => model.MPassword, "", new { @class = "text-danger" })
@@ -137,19 +140,19 @@ else
                         <br />
 
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.MPassword2, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            @Html.LabelFor(model => model.MPassword2, htmlAttributes: new { @class = "control-label col-md-4 text-start text-md-end align-self-center" })
                             <div class="col-md-4">
                                 @Html.PasswordFor(model => model.MPassword2, new { @class = "form-control", @style = "width:100%;max-width:unset" })
                                 @Html.ValidationMessageFor(model => model.MPassword2, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <br />
-                        <div class="row " style="background-color: #ECFFFF; padding: 7px; margin-left: 10px; margin-right: 10px; border-radius: 5px; font-weight: bold ">
+                        <div class="row justify-content-center justify-content-md-start" style="background-color: #ECFFFF; padding: 7px; margin-left: 10px; margin-right: 10px; border-radius: 5px; font-weight: bold ">
                             &ensp;&ensp;填寫個人基本資料
                         </div>
                         <br />
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.MName, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            @Html.LabelFor(model => model.MName, htmlAttributes: new { @class = "control-label col-md-4 text-start text-md-end align-self-center" })
                             <div class="col-md-4">
                                 @Html.EditorFor(model => model.MName, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset" } })
                                 @Html.ValidationMessageFor(model => model.MName, "", new { @class = "text-danger" })
@@ -158,20 +161,22 @@ else
                         <br />
 
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.MEmail, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            @Html.LabelFor(model => model.MEmail, htmlAttributes: new { @class = "control-label col-md-4 text-start text-md-end align-self-center" })
                             <div class="col-md-4">
                                 @Html.EditorFor(model => model.MEmail, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset", @id = "email-text" } })
                                 @Html.ValidationMessageFor(model => model.MEmail, "", new { @class = "text-danger" })
                             </div>
-                            <div class="col-md-4">
-                                <span><a class="btn btn-primary" id="check-email">檢查信箱可用性</a></span>
-                                <span id="email-result"></span>
-                            </div>
                         </div>
                         <br />
-
+                            <div class="form-group row">
+                                <div class="offset-md-4 col-md-8">
+                                    <span><a class="btn btn-primary" id="check-email">檢查信箱可用性</a></span>
+                                    <span id="email-result"></span>
+                                </div>
+                            </div>
+                        <br />
                         <div class="form-group row">
-                            @Html.LabelFor(model => model.MPhone, htmlAttributes: new { @class = "control-label col-md-4 text-end align-self-center" })
+                            @Html.LabelFor(model => model.MPhone, htmlAttributes: new { @class = "control-label col-md-4 text-start text-md-end align-self-center" })
                             <div class="col-md-4">
                                 @Html.EditorFor(model => model.MPhone, new { htmlAttributes = new { @class = "form-control", @style = "width:100%;max-width:unset;" } })
                                 @Html.ValidationMessageFor(model => model.MPhone, "", new { @class = "text-danger" })
@@ -182,7 +187,8 @@ else
                         <div class="form-group row">
                             <label class="control-label col-md-4"></label>
                             <div class="col-md-4">
-                                <input type="submit" value="確認註冊" class="btn btn-primary" style="background-color:orangered;border-radius:5px;width:100%;border:none" />
+                                <input type="submit" value="確認註冊" class="btn btn-primary" style="background-color: orangered; border-radius: 5px; width: 100%; border: none ;max-width: unset" />
+                                <p class="text-danger">@ViewBag.Error</p>
                             </div>
                         </div>
                         <br />

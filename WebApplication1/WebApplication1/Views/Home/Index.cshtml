@@ -9,7 +9,7 @@
 <div class="row align-items-start" style="margin-top:20px">
     @foreach (var item in Model)
     {
-        <div class="col-md-4">
+        <div class="col-12 col-sm-6 col-md-4">
             <div class="thumbnail">
                 <div class="img_box">
                     <a href="@Url.Action("Index","Product")?PId=@item.PId"><img src="~/images/@item.PImg" class="product_img"></a>

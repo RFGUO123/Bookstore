@@ -29,7 +29,16 @@
                             data = JSON.parse(data);
                             //location.reload() >>> 原網址載入
                             //指定路徑載入
-                            location.href = "/Product/Index?pId=" + PId + "&page=1";
+                            if (data.ok) {
+                                location.href = "/Product/Index?pId=" + PId + "&page=1";
+                            } else {                                
+                                Swal.fire({
+                                    title: "完成登入才可留言",
+                                    allowOutsideClick: false
+                                }).then(function (result) {
+                                    location.href = "/Member/Login";
+                                });
+                            }                                                      
                         },
                         error: function (xhr) {
                             alert("發生預期外的錯誤誤，請稍後再試");
@@ -57,7 +66,7 @@
 @if (Model != null)
 {
     <div>
-        <div class="container">
+        <div class="container" style="margin-bottom: 10px">
             <div class="row">
                 <div class="col-md-4">
                     <img src="~/images/@Model.PImg" style="width: 100%; height: 100%; border: 0.5px solid #9D9D9D; ">
@@ -88,6 +97,7 @@
                         <input type="submit" value="加入購物車" style="font-size: 1.2em; background-color: orangered; border: none " class="btn btn-primary" onclick="return confirm('確定購買 @Model.PName 嗎?')" />
                         <input type="hidden" id="submit_btn" name="PId" value="@Model.PId">
                     </form>
+                    <br/>
                 </div>
             </div>
         </div>
@@ -96,35 +106,38 @@
     if (ViewBag.messages.Count != 0)
     {
         int i = 1;
-        <div style="background-color: lightgoldenrodyellow; border-radius: 5px">
-            <p class="fs-3">留言板</p>
-
-            @foreach (var item in ViewBag.messages)
-            {
-                Member_Repository mr = new Member_Repository();
-                var member = mr.Select_Member_By_MId(item.MBMId);
-                <div class="row">
-                    <div class="col-md-1 text-center">
-                        留言 @i
-                    </div>
-                    <div class="col-md-10" style="background-color:lightyellow;margin-bottom:10px">
-                        <p>
-                            @member.MName  <span style="font-size:50%">(@item.MBDate)</span>
-                        </p>
-                        <p>
-                            @item.MBMessage
-                        </p>
-                    </div>
+        <div class="container">
+            <div class="row">
+                <div class="col" style="background-color: lightgoldenrodyellow; border-radius: 5px; margin-bottom: 10px">
+                    <p class="fs-3">留言板</p>
+                    @foreach (var item in ViewBag.messages)
+                    {
+                        Member_Repository mr = new Member_Repository();
+                        var member = mr.Select_Member_By_MId(item.MBMId);
+                        <div class="row">
+                            <div class="col-md-1 text-start text-md-center">
+                                留言 @i
+                            </div>
+                            <div class="offset-1 offset-md-0 col-10" style="background-color:lightyellow;margin-bottom:10px; min-width:120px">
+                                <p>
+                                    @member.MName  <span style="font-size:50%">(@item.MBDate)</span>
+                                </p>
+                                <p>
+                                    @item.MBMessage
+                                </p>
+                            </div>
+                        </div>
+                        i++;
+                    }
                 </div>
-                i++;
-            }
-            <div class="row justify-content-center">
-                @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
-                {
-                    <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("Index","Product")?PId=@Model.PId&page=@k">@k</a>
-                }
+                <div class="row justify-content-center">
+                    @for (int k = ViewBag.page_min_col; (k < ViewBag.page_max_col + 1); k++)
+                    {
+                        <a class="btn btn-danger col-md-1" style="width: 50px; margin-right: 10px; margin-bottom: 10px" href="@Url.Action("Index","Product")?PId=@Model.PId&page=@k">@k</a>
+                    }
+                </div>
             </div>
-        </div>
+        </div>      
     }
 
     <hr />
@@ -132,13 +145,18 @@
         <p class="fs-3">提出問題</p>
         <p style="text-indent: 2em">為保障會員交易安全，留言請勿填寫個人資料、外部連結或任何導私下交易之內容，否則您送出的內容可能無法正常顯示。</p>
         <div style="height: 300px;" class="row">
-            <div class="offset-md-3 col-md-6">
-                <textarea id="message" placeholder="請輸入您的建議或留言" style="min-width: 100%; height: 100%;border-radius: 5px"></textarea>
+            <div class="offset-1 offset-md-3 col-10 col-md-6">
+                <textarea id="message" placeholder="請輸入您的建議或留言" style="min-width:unset; max-width:unset; width: 100%; height: 100%;border-radius: 5px"></textarea>
             </div>
         </div>
-        <div class="row justify-content-center">
-            <input type="button" id="sent_message_btn" class="btn btn-primary col-md-1" style="font-size: 1.2em; margin-top: 10px; margin-bottom: 10px; background-color: orangered; border: none " value="送出留言">
+        <br />
+        <div class="form-group row">
+            <label class="control-label col-2 col-md-4"></label>
+            <div class="col-8 col-md-4">
+                <input type="button" id="sent_message_btn" class="btn btn-primary" style="background-color: orangered; border-radius: 5px; width: 100%; border: none; max-width: unset; min-width: 90px " value="送出留言">
+            </div>
         </div>
+        <br />
     </div>
 
 }
